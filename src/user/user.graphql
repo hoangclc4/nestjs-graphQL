@@ -1,0 +1,33 @@
+type User {
+  id: ID!
+  username: String!
+  created: String!
+  bookmarks: [Idea!]
+  ideas: [Idea!]
+}
+type Auth {
+  username: String!
+  token: String!
+}
+type Query {
+  users: [User!]
+  user: User!
+   memberInformation(
+  memberId: Int!
+  ): MemberInformation
+}
+type MemberInformation {
+  memberId: Int
+  memberName: String
+  deleteFlag: String
+}
+type Mutation {
+  login(username: String!, password: String!): Auth!
+  register(username: String!, password: String!): Auth!
+  bookmark(ideaId: String!): User!
+  unbookmark(ideaId: String!): User!
+}
+
+type Subscription {
+  userAdded: Auth!
+}

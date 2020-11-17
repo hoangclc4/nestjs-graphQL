@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 // import { Repository } from 'sequelize-typescript';
 import { IdeaEntity } from './idea.entity';
 // import { IDEA_REPOSITORY } from '../constants/index';
@@ -31,9 +36,9 @@ export class IdeaService {
     const ideas = await this.ideaRepository.find({
       relations: ['author', 'upvotes', 'downvotes'],
     });
-    return ideas.map(idea => this.ideaToResponseObject(idea));
+    return await ideas.map(idea => this.ideaToResponseObject(idea));
   }
-  async read(id: number) {
+  async read(id: string) {
     const idea = await this.ideaRepository.findOne({
       relations: ['author'],
       where: { id },
@@ -52,12 +57,18 @@ export class IdeaService {
     await this.ideaRepository.save(newIdea);
     return this.ideaToResponseObject(newIdea);
   }
-  async update(id: string, data: IdeaDTO) {
+  async update(id: string, data: IdeaDTO, userId: string) {
+    console.log(data);
+
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
     const idea = await this.ideaRepository.findOne({ where: { id } });
     if (!idea) {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
-    await this.ideaRepository.update({ id }, data);
+    await this.ideaRepository.update({ id }, { ...data });
     let res = await this.ideaRepository.findOne({
       where: { id },
       relations: ['author'],

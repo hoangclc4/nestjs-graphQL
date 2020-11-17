@@ -12,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { UserRO } from './user.dto';
 import { IdeaEntity } from 'src/idea/idea.entity';
+import { IdeaRO } from 'src/idea/idea.dto';
 
 @Entity('user')
 export class UserEntity {
@@ -48,13 +49,17 @@ export class UserEntity {
   })
   bookmarks: IdeaEntity[];
   toResponseObject(showToken: boolean = true): UserRO {
-    const { id, username, token, bookmarks } = this;
+    const { id, username, token, bookmarks, ideas, created } = this;
     const responseObject: UserRO = {
       id,
       username,
+      created,
     };
     if (showToken) {
       responseObject.token = token;
+    }
+    if (ideas) {
+      responseObject.ideas = ideas;
     }
     if (bookmarks) responseObject.bookmarks = bookmarks;
     return responseObject;

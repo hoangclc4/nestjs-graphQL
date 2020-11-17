@@ -21,7 +21,7 @@ export class IdeaController {
     return this.ideaService.showAll();
   }
   @Get(':id')
-  readIdea(@Param('id') id: number) {
+  readIdea(@Param('id') id: string) {
     return this.ideaService.read(id);
   }
   @Post()
@@ -33,8 +33,12 @@ export class IdeaController {
 
   @Put(':id')
   @UsePipes(new ValidationPipe())
-  updateIdea(@Param('id') id: string, @Body() data: IdeaDTO) {
-    return this.ideaService.update(id, data);
+  updateIdea(
+    @Param('id') id: string,
+    @Body() data: IdeaDTO,
+    @User('id') userId,
+  ) {
+    return this.ideaService.update(id, data, userId);
   }
 
   // @Delete(':id')

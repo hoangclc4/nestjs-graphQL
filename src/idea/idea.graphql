@@ -1,0 +1,26 @@
+type Idea {
+  id: ID!
+  idea: String!
+  description: String!
+  created: String!
+  updated: String!
+  author: User!
+  upvotes: Int
+  downvotes: Int
+}
+input IdeaInput {
+  idea: String!
+  description: String!
+}
+type Query {
+  ideas: [Idea!]
+}
+type Query {
+  idea(id: String): Idea!
+}
+type Mutation {
+  createIdea(idea: String!, description: String): Idea!
+}
+type Mutation {
+  updateIdea(id: String!, data: IdeaInput!): Idea!
+}

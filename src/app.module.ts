@@ -8,11 +8,17 @@ import { HttpErrorFilter } from './shared/http-error.filter';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { LoggingInterceptor } from './shared/logging.interceptor';
 import { ValidationPipe } from './shared/validation.pipe';
+import { GraphQLModule } from '@nestjs/graphql';
 @Module({
   imports: [
     UserModule,
     IdeaModule,
     TypeOrmModule.forRoot({ autoLoadEntities: true }),
+    GraphQLModule.forRoot({
+      typePaths: ['./**/*.graphql'],
+      context: ({ req }) => ({ headers: req.headers }),
+      installSubscriptionHandlers: true,
+    }),
   ],
   providers: [
     {
